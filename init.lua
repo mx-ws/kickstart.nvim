@@ -91,7 +91,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -116,7 +116,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -620,6 +620,22 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    on_attach(_, ev.buf)
+  end
+})
+
+vim.cmd [[autocmd BufWritePre *.elm lua vim.lsp.buf.format()]]
+
+-- via Neovim Lsp Client
+vim.lsp.start({
+  name = 'elm-ls-manually-installed',
+  cmd = { 'elm-language-server' },
+  root_dir = vim.fs.dirname(vim.fs.find({ 'elm.json' }, { upward = true })[1]),
+})
+
+-- via lspconfig
 -- require'lspconfig'.elmls.setup{}
 
 -- [[ Configure nvim-cmp ]]
